@@ -42,22 +42,33 @@ schema_file.close()
 # Gather a list of all our sql files
 sql_files = [f for f in os.listdir(dir) if f.endswith(".sql") and f[:1].isdigit()]
 
+print(csv_files)
+print(sql_files)
+
 os.chdir('./data')
+cwd = os.getcwd()
 
 # Open the schema file in append
 with open("schema.sql", "a") as schema:
-    for sql_file, csv_file in zip(sql_files, csv_files):
+    # Write the tables
+    for sql_file in sql_files:
         with open(sql_file) as f_sql:
-            # Write the sql file lines to the schema
             for line in f_sql:
                 schema.write(line)
-        # Clean up
-        print(f"Appended {sql_file} to schema file.")
-        os.remove(sql_file)
+                print(f"Appended {sql_file} to schema file.")
+
+    # Fill the tables
+    for csv_file in csv_files:
         with open(csv_file) as f_csv:
-            # Write the csv file lines to the schema
             for line in f_csv:
                 schema.write(line)
-        print(f"Appended {csv_file} to schema file.")
-        # Clean up 
-        os.remove(csv_file)
+                print(f"Appended {csv_file} to schema file.")
+
+# Clean up
+sql_files = [f for f in os.listdir(cwd) if f.endswith(".sql") and f[:1].isdigit()]
+for i in sql_files:
+    os.remove(i)
+# Clean up
+csv_files = [f for f in os.listdir(cwd) if f.endswith(".csv")]
+for i in csv_files:
+    os.remove(i)
